@@ -115,6 +115,7 @@ async function loadArenaBlocks() {
           const videoId = ytMatch[1];
           item.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="height:300px;"></iframe>`;
         } else {
+          // Regular link with screenshot
           item.innerHTML = `<a href="${url}" target="_blank"><img src="https://api.microlink.io/?url=${url}&screenshot=true&meta=false&embed=screenshot.url&_=${Date.now()}"></a>`;
         }
       }
