@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-  /* Masonry Grid */
   body {
     font-family: sans-serif;
     margin: 0;
@@ -51,8 +50,6 @@
   @media (max-width:700px){
     #arena-grid{column-count:2;}
   }
-
-  /* Modal for full-size image */
   #arena-modal {
     display:none;
     position:fixed;
@@ -75,22 +72,19 @@
 
 <div id="arena-grid"></div>
 
-<!-- Modal for images -->
 <div id="arena-modal" onclick="this.style.display='none'">
   <img id="arena-modal-img" src="">
 </div>
 
 <script>
-// Are.na channel slug
 const channel = "zackshoom-com";
 
-// Fetch Are.na blocks
 async function loadArenaBlocks() {
   try {
     const res = await fetch(`https://api.are.na/v2/channels/${channel}?per=100&_=${Date.now()}`);
     const data = await res.json();
     const grid = document.getElementById("arena-grid");
-    grid.innerHTML = ""; // Clear old blocks
+    grid.innerHTML = ""; 
 
     const blocks = data.contents.slice().reverse(); // newest first
 
@@ -113,41 +107,23 @@ async function loadArenaBlocks() {
       else if(block.class === "Text" && block.content){
         item.innerHTML = `<div class="arena-text">${block.content}</div>`;
       }
-      // Link
+      // Links (detect YouTube)
       else if(block.class === "Link" && block.source?.url){
         const url = block.source.url;
-        item.innerHTML = `
-          <a href="${url}" target="_blank">
-            <img src="https://api.microlink.io/?url=${url}&screenshot=true&meta=false&embed=screenshot.url&_=${Date.now()}">
-          </a>
-        `;
+        const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+        if(ytMatch){
+          const videoId = ytMatch[1];
+          item.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="height:300px;"></iframe>`;
+        } else {
+          item.innerHTML = `<a href="${url}" target="_blank"><img src="https://api.microlink.io/?url=${url}&screenshot=true&meta=false&embed=screenshot.url&_=${Date.now()}"></a>`;
+        }
       }
-      // YouTube Video
-      else if(block.class === "Attachment" && block.attachment?.service === "youtube"){
-        // Extract YouTube video ID from URL
-        let videoUrl = block.attachment.url;
-        let videoId = videoUrl.split("v=")[1]?.split("&")[0] || videoUrl.split("/").pop();
-        item.innerHTML = `
-          <iframe 
-            src="https://www.youtube.com/embed/${videoId}" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen
-            style="height:300px;">
-          </iframe>
-        `;
-      }
-      // MP3 Audio
+      // MP3 audio
       else if(block.class === "Attachment" && block.attachment?.content_type === "audio/mpeg"){
         const audioUrl = block.attachment.url;
-        item.innerHTML = `
-          <audio controls>
-            <source src="${audioUrl}" type="audio/mpeg">
-            Your browser does not support the audio element.
-          </audio>
-        `;
+        item.innerHTML = `<audio controls><source src="${audioUrl}" type="audio/mpeg">Your browser does not support the audio element.</audio>`;
       } else {
-        return; // skip unusable blocks
+        return;
       }
 
       grid.appendChild(item);
@@ -158,10 +134,7 @@ async function loadArenaBlocks() {
   }
 }
 
-// Initial load
 loadArenaBlocks();
-
-// Auto-refresh every 60 seconds
 setInterval(loadArenaBlocks, 60000);
 </script>
 
