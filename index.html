@@ -4,17 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-  body { font-family: sans-serif; margin:0; padding:20px; background:#fff; }
-  #arena-grid { column-count:4; column-gap:24px; }
-  .arena-item { break-inside:avoid; margin-bottom:24px; cursor:pointer; transition: transform 0.2s ease; }
-  .arena-item:hover { transform: scale(1.03); }
-  .arena-item img { width:100%; display:block; border-radius:6px; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
-  .arena-text { font-size:16px; line-height:1.5; background:#f5f5f5; padding:16px; border-radius:6px; box-shadow:0 2px 4px rgba(0,0,0,0.05); }
-  iframe, audio { width:100%; border-radius:6px; margin-bottom:24px; }
-  @media(max-width:1000px){ #arena-grid{ column-count:3; } }
-  @media(max-width:700px){ #arena-grid{ column-count:2; } }
-  #arena-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:1000; }
-  #arena-modal img { max-width:90%; max-height:90%; border-radius:6px; }
+body { font-family:sans-serif; margin:0; padding:20px; background:#fff; }
+#arena-grid { column-count:4; column-gap:24px; }
+.arena-item { break-inside:avoid; margin-bottom:24px; cursor:pointer; transition: transform 0.2s ease; }
+.arena-item:hover { transform: scale(1.03); }
+.arena-item img { width:100%; display:block; border-radius:6px; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
+.arena-text, .arena-link { font-size:16px; line-height:1.5; background:#f5f5f5; padding:16px; border-radius:6px; box-shadow:0 2px 4px rgba(0,0,0,0.05); word-break: break-word; text-decoration:none; color:#0645AD; display:block; }
+iframe, audio { width:100%; border-radius:6px; margin-bottom:24px; }
+@media(max-width:1000px){ #arena-grid{ column-count:3; } }
+@media(max-width:700px){ #arena-grid{ column-count:2; } }
+#arena-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:1000; }
+#arena-modal img { max-width:90%; max-height:90%; border-radius:6px; }
 </style>
 </head>
 <body>
@@ -27,6 +27,12 @@
 
 <script>
 const channel = "zackshoom-com";
+
+// Convert URLs in any text to clickable links
+function linkify(text){
+  if(!text) return '';
+  return text.replace(/(https?:\/\/[^\s]+)/g, url => `<a href="${url}" target="_blank" class="arena-link">${url}</a>`);
+}
 
 async function loadArenaBlocks() {
   try {
@@ -62,27 +68,31 @@ async function loadArenaBlocks() {
         handled = true;
       }
 
-      // Links (show all links as clickable)
-      else if(block.class === "Link" && block.source?.url){
-        const url = block.source.url;
-        item.innerHTML = `<a href="${url}" target="_blank">${url}</a>`;
-        handled = true;
+      // Link blocks — render URL from source or content
+      else if(block.class === "Link"){
+        const url = block.source?.url || block.content;
+        if(url){
+          item.innerHTML = `<a href="${url}" target="_blank" class="arena-link">${url}</a>`;
+          handled = true;
+        }
       }
 
-      // Text blocks
+      // Text blocks — linkify URLs
       else if(block.class === "Text" && block.content){
-        item.innerHTML = `<div class="arena-text">${block.content}</div>`;
+        item.innerHTML = `<div class="arena-text">${linkify(block.content)}</div>`;
         handled = true;
       }
 
       if(handled) grid.appendChild(item);
     });
+
   } catch(err){
     console.error("Are.na fetch error:", err);
   }
 }
 
-
+// Load once on page load
+loadArenaBlocks();
 </script>
 
 </body>
