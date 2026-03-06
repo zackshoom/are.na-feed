@@ -92,7 +92,9 @@ async function loadArenaBlocks() {
       let item = document.createElement("div");
       item.className = "arena-item";
 
-      // Image
+      let handled = false;
+
+      // Image blocks
       if(block.class === "Image" && block.image?.display?.url){
         const url = `${block.image.display.url}?_=${Date.now()}`;
         item.innerHTML = `<img src="${url}" />`;
@@ -102,32 +104,51 @@ async function loadArenaBlocks() {
           modalImg.src = url;
           modal.style.display = "flex";
         }
+        handled = true;
       }
-      // Text
-      else if(block.class === "Text" && block.content){
-        item.innerHTML = `<div class="arena-text">${block.content}</div>`;
-      }
-      // Links (detect YouTube)
-      else if(block.class === "Link" && block.source?.url){
-        const url = block.source.url;
-        const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
-        if(ytMatch){
-          const videoId = ytMatch[1];
-          item.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="height:300px;"></iframe>`;
-        } else {
-          // Regular link with screenshot
-          item.innerHTML = `<a href="${url}" target="_blank"><img src="https://api.microlink.io/?url=${url}&screenshot=true&meta=false&embed=screenshot.url&_=${Date.now()}"></a>`;
-        }
-      }
-      // MP3 audio
+
+      // MP3 audio blocks
       else if(block.class === "Attachment" && block.attachment?.content_type === "audio/mpeg"){
         const audioUrl = block.attachment.url;
         item.innerHTML = `<audio controls><source src="${audioUrl}" type="audio/mpeg">Your browser does not support the audio element.</audio>`;
-      } else {
-        return;
+        handled = true;
       }
 
-      grid.appendChild(item);
+      // Links or Text that might contain YouTube
+      let ytUrl = null;
+
+      // Check Link block
+      if(!handled && block.class === "Link" && block.source?.url){
+        ytUrl = block.source.url;
+      }
+
+      // Check Text block content
+      if(!handled && block.class === "Text" && block.content){
+        const match = block.content.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+        if(match) ytUrl = match[0];
+      }
+
+      // Embed YouTube if found
+      if(ytUrl){
+        const videoId = ytUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/)[1];
+        item.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="height:300px;"></iframe>`;
+        handled = true;
+      }
+
+      // If still not handled, render normal link screenshot
+      if(!handled && block.class === "Link" && block.source?.url){
+        const url = block.source.url;
+        item.innerHTML = `<a href="${url}" target="_blank"><img src="https://api.microlink.io/?url=${url}&screenshot=true&meta=false&embed=screenshot.url&_=${Date.now()}"></a>`;
+        handled = true;
+      }
+
+      // Render Text block content if still not handled
+      if(!handled && block.class === "Text" && block.content){
+        item.innerHTML = `<div class="arena-text">${block.content}</div>`;
+        handled = true;
+      }
+
+      if(handled) grid.appendChild(item);
     });
 
   } catch(err) {
