@@ -4,68 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-  body {
-    font-family: sans-serif;
-    margin: 0;
-    padding: 20px;
-    background: #fff;
-  }
-  #arena-grid{
-    column-count:4;
-    column-gap:24px;
-  }
-  .arena-item{
-    break-inside:avoid;
-    margin-bottom:24px;
-    position:relative;
-    cursor:pointer;
-    transition: transform 0.2s ease;
-  }
-  .arena-item:hover{
-    transform: scale(1.03);
-    z-index:2;
-  }
-  .arena-item img{
-    width:100%;
-    display:block;
-    border-radius:6px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  }
-  .arena-text{
-    font-size:16px;
-    line-height:1.5;
-    background:#f5f5f5;
-    padding:16px;
-    border-radius:6px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  }
-  iframe, audio{
-    width:100%;
-    border-radius:6px;
-    margin-bottom: 24px;
-  }
-  @media (max-width:1000px){
-    #arena-grid{column-count:3;}
-  }
-  @media (max-width:700px){
-    #arena-grid{column-count:2;}
-  }
-  #arena-modal {
-    display:none;
-    position:fixed;
-    top:0; left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.8);
-    justify-content:center;
-    align-items:center;
-    z-index:1000;
-  }
-  #arena-modal img{
-    max-width:90%;
-    max-height:90%;
-    border-radius:6px;
-  }
+  body { font-family: sans-serif; margin:0; padding:20px; background:#fff; }
+  #arena-grid { column-count:4; column-gap:24px; }
+  .arena-item { break-inside:avoid; margin-bottom:24px; cursor:pointer; transition: transform 0.2s ease; }
+  .arena-item:hover { transform: scale(1.03); }
+  .arena-item img { width:100%; display:block; border-radius:6px; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
+  .arena-text { font-size:16px; line-height:1.5; background:#f5f5f5; padding:16px; border-radius:6px; box-shadow:0 2px 4px rgba(0,0,0,0.05); }
+  iframe, audio { width:100%; border-radius:6px; margin-bottom:24px; }
+  @media(max-width:1000px){ #arena-grid{ column-count:3; } }
+  @media(max-width:700px){ #arena-grid{ column-count:2; } }
+  #arena-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:1000; }
+  #arena-modal img { max-width:90%; max-height:90%; border-radius:6px; }
 </style>
 </head>
 <body>
@@ -84,20 +33,19 @@ async function loadArenaBlocks() {
     const res = await fetch(`https://api.are.na/v2/channels/${channel}?per=100&_=${Date.now()}`);
     const data = await res.json();
     const grid = document.getElementById("arena-grid");
-    grid.innerHTML = ""; 
+    grid.innerHTML = "";
 
     const blocks = data.contents.slice().reverse(); // newest first
 
     blocks.forEach(block => {
       let item = document.createElement("div");
       item.className = "arena-item";
-
       let handled = false;
 
-      // Image blocks
+      // Images
       if(block.class === "Image" && block.image?.display?.url){
         const url = `${block.image.display.url}?_=${Date.now()}`;
-        item.innerHTML = `<img src="${url}" />`;
+        item.innerHTML = `<img src="${url}"/>`;
         item.onclick = () => {
           const modal = document.getElementById("arena-modal");
           const modalImg = document.getElementById("arena-modal-img");
@@ -107,51 +55,29 @@ async function loadArenaBlocks() {
         handled = true;
       }
 
-      // MP3 audio blocks
+      // MP3
       else if(block.class === "Attachment" && block.attachment?.content_type === "audio/mpeg"){
         const audioUrl = block.attachment.url;
-        item.innerHTML = `<audio controls><source src="${audioUrl}" type="audio/mpeg">Your browser does not support the audio element.</audio>`;
+        item.innerHTML = `<audio controls><source src="${audioUrl}" type="audio/mpeg">Your browser does not support audio.</audio>`;
         handled = true;
       }
 
-      // Links or Text that might contain YouTube
-      let ytUrl = null;
-
-      // Check Link block
-      if(!handled && block.class === "Link" && block.source?.url){
-        ytUrl = block.source.url;
-      }
-
-      // Check Text block content
-      if(!handled && block.class === "Text" && block.content){
-        const match = block.content.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
-        if(match) ytUrl = match[0];
-      }
-
-      // Embed YouTube if found
-      if(ytUrl){
-        const videoId = ytUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/)[1];
-        item.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="height:300px;"></iframe>`;
-        handled = true;
-      }
-
-      // If still not handled, render normal link screenshot
-      if(!handled && block.class === "Link" && block.source?.url){
+      // Links (show all links as clickable)
+      else if(block.class === "Link" && block.source?.url){
         const url = block.source.url;
-        item.innerHTML = `<a href="${url}" target="_blank"><img src="https://api.microlink.io/?url=${url}&screenshot=true&meta=false&embed=screenshot.url&_=${Date.now()}"></a>`;
+        item.innerHTML = `<a href="${url}" target="_blank">${url}</a>`;
         handled = true;
       }
 
-      // Render Text block content if still not handled
-      if(!handled && block.class === "Text" && block.content){
+      // Text blocks
+      else if(block.class === "Text" && block.content){
         item.innerHTML = `<div class="arena-text">${block.content}</div>`;
         handled = true;
       }
 
       if(handled) grid.appendChild(item);
     });
-
-  } catch(err) {
+  } catch(err){
     console.error("Are.na fetch error:", err);
   }
 }
