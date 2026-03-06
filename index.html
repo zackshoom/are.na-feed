@@ -40,6 +40,11 @@
     border-radius:6px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   }
+  iframe, audio{
+    width:100%;
+    border-radius:6px;
+    margin-bottom: 24px;
+  }
   @media (max-width:1000px){
     #arena-grid{column-count:3;}
   }
@@ -70,7 +75,7 @@
 
 <div id="arena-grid"></div>
 
-<!-- Modal -->
+<!-- Modal for images -->
 <div id="arena-modal" onclick="this.style.display='none'">
   <img id="arena-modal-img" src="">
 </div>
@@ -87,14 +92,13 @@ async function loadArenaBlocks() {
     const grid = document.getElementById("arena-grid");
     grid.innerHTML = ""; // Clear old blocks
 
-    // Newest first
-    const blocks = data.contents.slice().reverse();
+    const blocks = data.contents.slice().reverse(); // newest first
 
     blocks.forEach(block => {
       let item = document.createElement("div");
       item.className = "arena-item";
 
-      // Image block
+      // Image
       if(block.class === "Image" && block.image?.display?.url){
         const url = `${block.image.display.url}?_=${Date.now()}`;
         item.innerHTML = `<img src="${url}" />`;
@@ -105,7 +109,11 @@ async function loadArenaBlocks() {
           modal.style.display = "flex";
         }
       }
-      // Link block
+      // Text
+      else if(block.class === "Text" && block.content){
+        item.innerHTML = `<div class="arena-text">${block.content}</div>`;
+      }
+      // Link
       else if(block.class === "Link" && block.source?.url){
         const url = block.source.url;
         item.innerHTML = `
@@ -114,9 +122,30 @@ async function loadArenaBlocks() {
           </a>
         `;
       }
-      // Text block
-      else if(block.class === "Text" && block.content){
-        item.innerHTML = `<div class="arena-text">${block.content}</div>`;
+      // YouTube Video
+      else if(block.class === "Attachment" && block.attachment?.service === "youtube"){
+        // Extract YouTube video ID from URL
+        let videoUrl = block.attachment.url;
+        let videoId = videoUrl.split("v=")[1]?.split("&")[0] || videoUrl.split("/").pop();
+        item.innerHTML = `
+          <iframe 
+            src="https://www.youtube.com/embed/${videoId}" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen
+            style="height:300px;">
+          </iframe>
+        `;
+      }
+      // MP3 Audio
+      else if(block.class === "Attachment" && block.attachment?.content_type === "audio/mpeg"){
+        const audioUrl = block.attachment.url;
+        item.innerHTML = `
+          <audio controls>
+            <source src="${audioUrl}" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+        `;
       } else {
         return; // skip unusable blocks
       }
