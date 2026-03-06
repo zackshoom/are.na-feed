@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.4">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1">&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1">&lt;title&gt;Zack Shoom Are.na Feed&lt;/title&gt;</p>
+<p class="p1">&lt;style&gt;</p>
+<p class="p1">/* Masonry Grid */</p>
+<p class="p1">body {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-family: sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin: 0;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>padding: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: #fff;</p>
+<p class="p1">}</p>
+<p class="p1">#arena-grid{</p>
+<p class="p1"><span class="Apple-converted-space">  </span>column-count:4;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>column-gap:24px;</p>
+<p class="p1">}</p>
+<p class="p1">.arena-item{</p>
+<p class="p1"><span class="Apple-converted-space">  </span>break-inside:avoid;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin-bottom:24px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>position:relative;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>cursor:pointer;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>transition: transform 0.2s ease;</p>
+<p class="p1">}</p>
+<p class="p1">.arena-item:hover{</p>
+<p class="p1"><span class="Apple-converted-space">  </span>transform: scale(1.03);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>z-index:2;</p>
+<p class="p1">}</p>
+<p class="p1">.arena-item img{</p>
+<p class="p1"><span class="Apple-converted-space">  </span>width:100%;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>display:block;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border-radius:6px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>box-shadow: 0 4px 8px rgba(0,0,0,0.1);</p>
+<p class="p1">}</p>
+<p class="p1">.arena-text{</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size:16px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>line-height:1.5;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background:#f5f5f5;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>padding:16px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border-radius:6px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>box-shadow: 0 2px 4px rgba(0,0,0,0.05);</p>
+<p class="p1">}</p>
+<p class="p1">@media (max-width:1000px){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>#arena-grid{column-count:3;}</p>
+<p class="p1">}</p>
+<p class="p1">@media (max-width:700px){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>#arena-grid{column-count:2;}</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* Modal for full-size image */</p>
+<p class="p1">#arena-modal {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>display:none;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>position:fixed;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>top:0; left:0;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>width:100%;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>height:100%;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background:rgba(0,0,0,0.8);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>justify-content:center;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>align-items:center;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>z-index:1000;</p>
+<p class="p1">}</p>
+<p class="p1">#arena-modal img{</p>
+<p class="p1"><span class="Apple-converted-space">  </span>max-width:90%;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>max-height:90%;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border-radius:6px;</p>
+<p class="p1">}</p>
+<p class="p1">&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;h1&gt;Zack Shoom Are.na Feed&lt;/h1&gt;</p>
+<p class="p1">&lt;div id="arena-grid"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- Modal --&gt;</p>
+<p class="p1">&lt;div id="arena-modal" onclick="this.style.display='none'"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;img id="arena-modal-img" src=""&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;script&gt;</p>
+<p class="p1">// Are.na channel slug</p>
+<p class="p1">const channel = "zackshoom-com";</p>
+<p class="p2"><br></p>
+<p class="p1">// Fetch Are.na blocks</p>
+<p class="p1">async function loadArenaBlocks() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const res = await fetch(`https://api.are.na/v2/channels/${channel}?per=100&amp;_=${Date.now()}`);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const data = await res.json();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const grid = document.getElementById("arena-grid");</p>
+<p class="p1"><span class="Apple-converted-space">    </span>grid.innerHTML = ""; // Clear old blocks</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Newest first</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const blocks = data.contents.slice().reverse();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>blocks.forEach(block =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>let item = document.createElement("div");</p>
+<p class="p1"><span class="Apple-converted-space">      </span>item.className = "arena-item";</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Image block</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if(block.class === "Image" &amp;&amp; block.image?.display?.url){</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const url = `${block.image.display.url}?_=${Date.now()}`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>item.innerHTML = `&lt;img src="${url}" /&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>item.onclick = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const modal = document.getElementById("arena-modal");</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const modalImg = document.getElementById("arena-modal-img");</p>
+<p class="p1"><span class="Apple-converted-space">          </span>modalImg.src = url;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>modal.style.display = "flex";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Link block</p>
+<p class="p1"><span class="Apple-converted-space">      </span>else if(block.class === "Link" &amp;&amp; block.source?.url){</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const url = block.source.url;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>item.innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;a href="${url}" target="_blank"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;img src="https://api.microlink.io/?url=${url}&amp;screenshot=true&amp;meta=false&amp;embed=screenshot.url&amp;_=${Date.now()}"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/a&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>`;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Text block</p>
+<p class="p1"><span class="Apple-converted-space">      </span>else if(block.class === "Text" &amp;&amp; block.content){</p>
+<p class="p1"><span class="Apple-converted-space">        </span>item.innerHTML = `&lt;div class="arena-text"&gt;${block.content}&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return; // skip unusable blocks</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>grid.appendChild(item);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>} catch(err) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>console.error("Are.na fetch error:", err);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">// Initial load</p>
+<p class="p1">loadArenaBlocks();</p>
+<p class="p2"><br></p>
+<p class="p1">// Optional: auto-refresh every 60 seconds</p>
+<p class="p1">setInterval(loadArenaBlocks, 60000);</p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
